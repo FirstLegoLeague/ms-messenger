@@ -13,5 +13,10 @@
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0"
+  },
+  "dependencies": {
+    "@first-lego-league/ms-correlation": "^0.0.5",
+    "@first-lego-league/ms-logger": "^1.4.0",
+    "bluebird": "^3.5.3"
   }
 }
