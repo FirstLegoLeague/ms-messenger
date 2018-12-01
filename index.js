@@ -4,7 +4,6 @@
 const MHubClient = require('mhub').MClient
 const { Logger } = require('@first-lego-league/ms-logger')
 const { getCorrelationId } = require('@first-lego-league/ms-correlation')
-// const Promise = require('bluebird')
 
 const DEFAULT_OPTIONS = {
   reconnectTimeout: 10 * 1000, // 10 seconds
