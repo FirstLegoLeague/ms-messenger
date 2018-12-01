@@ -2,21 +2,27 @@
 /* eslint node/no-unsupported-features: 0 */
 
 const MHubClient = require('mhub').MClient
-const { Logger } = require('@first-lego-league/ms-logger')
 const { getCorrelationId } = require('@first-lego-league/ms-correlation')
 
 const DEFAULT_OPTIONS = {
   reconnectTimeout: 10 * 1000, // 10 seconds
   mhubURI: process.env.MHUB_URI,
   node: 'default',
-  clientId: getCorrelationId()
+  clientId: getCorrelationId(),
+  logger: {
+    debug: () => { },
+    info: () => { },
+    warn: () => { },
+    error: () => { },
+    fatal: () => { }
+  }
 }
 
 class Messenger {
   constructor (options) {
     this.options = Object.assign(options, DEFAULT_OPTIONS)
 
-    this.logger = new Logger()
+    this.logger = this.options.logger
     this.client = new MHubClient(this.options.mhubURI)
     this.topics = []
 
