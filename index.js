@@ -19,7 +19,7 @@ const DEFAULT_OPTIONS = {
 }
 
 class Messenger {
-  constructor (options) {
+  constructor (options = {}) {
     this.options = Object.assign(options, DEFAULT_OPTIONS)
 
     this.logger = this.options.logger
