@@ -1,6 +1,8 @@
 'use strict'
 /* eslint node/no-unsupported-features: 0 */
 
+const DO_NOTHING = () => { }
+
 const MHubClient = require('mhub').MClient
 const { getCorrelationId } = require('@first-lego-league/ms-correlation')
 
@@ -10,11 +12,11 @@ const DEFAULT_OPTIONS = {
   node: 'default',
   clientId: getCorrelationId(),
   logger: {
-    debug: () => { },
-    info: () => { },
-    warn: () => { },
-    error: () => { },
-    fatal: () => { }
+    debug: DO_NOTHING,
+    info: DO_NOTHING,
+    warn: DO_NOTHING,
+    error: DO_NOTHING,
+    fatal: DO_NOTHING
   }
 }
 
@@ -33,49 +35,51 @@ class Messenger {
     })
   }
 
-  connect () {
-    if (!this._connectionPromise) {
-      this.logger.debug('Connecting to MHub')
-      this._connectionPromise = this.client.connect()
-        .then(() => this.logger.debug('Conneted to MHub'))
-
-      if (this.options.credentials) {
-        this._connectionPromise = this._connectionPromise
-          .then(() => this.client.login(this.options.credentials.username, this.options.credentials.password))
-          .then(() => this.logger.debug('Logged into MHub'))
-      }
-
-      this._connectionPromise = this._connectionPromise
-        .catch(msg => {
-          this.logger.error(`Could not connect to MHub ${msg}`)
-          this._setTimeoutToReconnect()
-        })
-    }
-    return this._connectionPromise
-  }
-
-  listen (topic, callback) {
+  on (topic, callback) {
+    const topicRegexp = new RegExp(topic)
     this.client.on('message', message => {
-      if (message.topic === topic) {
+      if (topicRegexp.exec(message.topic) !== null) {
         callback(message.data, message)
       }
     })
     this.topics.push(topic)
-    return this.connect()
+    return this._connect()
       .then(() => this.client.subscribe(this.options.node, topic))
   }
 
   send (topic, data) {
-    return this.connect()
-      .then(() => this.client.publish(this.node, topic, data, {
-        'client-id': this.clientId,
+    return this._connect()
+      .then(() => this.client.publish(this.options.node, topic, data, {
+        'client-id': this.options.clientId,
         'correlation-id': getCorrelationId()
       }))
   }
 
   _setTimeoutToReconnect () {
     this._connectionPromise = undefined
-    setTimeout(() => this.connect(), this.options.reconnectTimeout)
+    setTimeout(() => this._connect(), this.options.reconnectTimeout)
+  }
+
+  _connect () {
+    if (!this._connectionPromise) {
+      this.logger.debug('Connecting to MHub...')
+
+      this._connectionPromise = this.client.connect()
+        .then(() => this.logger.debug('Conneted to MHub.'))
+
+      if (this.options.credentials) {
+        this._connectionPromise = this._connectionPromise
+          .then(() => this.client.login(this.options.credentials.username, this.options.credentials.password))
+          .then(() => this.logger.debug('Logged into MHub.'))
+      }
+
+      this._connectionPromise = this._connectionPromise
+        .catch(msg => {
+          this.logger.error(`Could not connect to MHub: ${msg}.`)
+          this._setTimeoutToReconnect()
+        })
+    }
+    return this._connectionPromise
   }
 }
 
