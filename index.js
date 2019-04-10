@@ -71,10 +71,10 @@ class Messenger {
 const DO_NOTHING = () => { }
 
 Messenger.DEFAULT_OPTIONS = {
-  reconnectTimeout: 10 * 1000, // 10 seconds
   mhubURI: process.env.MHUB_URI,
   node: 'default',
   clientId: getCorrelationId(),
+  reconnectTimeout: 10 * 1000, // 10 seconds
   logger: {
     debug: DO_NOTHING,
     info: DO_NOTHING,
