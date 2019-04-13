@@ -27,19 +27,19 @@ class Messenger {
       }
     })
     this._topics.push(topic)
-    return this._connect()
+    return this.connect()
       .then(() => this._client.subscribe(this.options.node, topic))
   }
 
   send (topic, data) {
-    return this._connect()
+    return this.connect()
       .then(() => this._client.publish(this.node, topic, data, {
         'client-id': this._clientId,
         'correlation-id': getCorrelationId()
       }))
   }
 
-  _connect () {
+  connect () {
     if (!this._connectionPromise) {
       this._logger.debug('Connecting to MHub')
       this._connectionPromise = this._client.connect()
@@ -49,6 +49,11 @@ class Messenger {
         this._connectionPromise = this._connectionPromise
           .then(() => this._client.login(this.options.credentials.username, this.options.credentials.password))
           .then(() => this._logger.debug('Logged into MHub'))
+      }
+
+      if (this._topics.length) {
+        this._connectionPromise = this._connectionPromise
+          .then(() => Promise.all(this._topics.map(topic => this._client.subscribe(this.node, topic))))
       }
 
       this._connectionPromise = this._connectionPromise
@@ -63,7 +68,7 @@ class Messenger {
   _setTimeoutToReconnect () {
     this._connectionPromise = undefined
     return new Promise(resolve => {
-      setTimeout(() => this._connect().then(resolve), this.options.reconnectTimeout)
+      setTimeout(() => this.connect().then(resolve), this.options.reconnectTimeout)
     })
   }
 }

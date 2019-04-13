@@ -60,9 +60,9 @@ describe('ms-messenger', () => {
       const callback = chai.spy()
 
       beforeEach(() => {
-        messenger._connect = () => Promise.resolve()
+        messenger.connect = () => Promise.resolve()
         messengerSandbox = chai.spy.sandbox()
-        messengerSandbox.on(messenger, ['_connect'])
+        messengerSandbox.on(messenger, ['connect'])
       })
 
       it('attaches a listen on the client `message` event that calls the callback only if the topic fits', () => {
@@ -85,10 +85,10 @@ describe('ms-messenger', () => {
           })
       })
 
-      it('calls _connect', () => {
+      it('calls connect', () => {
         return messenger.listen(topic, callback)
           .then(() => {
-            expect(messenger._connect).to.have.been.called()
+            expect(messenger.connect).to.have.been.called()
           })
       })
 
@@ -105,15 +105,15 @@ describe('ms-messenger', () => {
       const data = { property1: 'value1', property2: 3 }
 
       beforeEach(() => {
-        messenger._connect = () => Promise.resolve()
+        messenger.connect = () => Promise.resolve()
         messengerSandbox = chai.spy.sandbox()
-        messengerSandbox.on(messenger, ['_connect'])
+        messengerSandbox.on(messenger, ['connect'])
       })
 
-      it('calls _connect', () => {
+      it('calls connect', () => {
         return messenger.send(topic, data)
           .then(() => {
-            expect(messenger._connect).to.have.been.called()
+            expect(messenger.connect).to.have.been.called()
           })
       })
 
@@ -132,7 +132,7 @@ describe('ms-messenger', () => {
       })
     })
 
-    describe('_connect', () => {
+    describe('connect', () => {
       const MOCK_CONNECTION_PROMISE_VALUE = 'some value'
       const MOCK_CONNECTION_PROMISE = Promise.resolve(MOCK_CONNECTION_PROMISE_VALUE)
 
@@ -142,24 +142,24 @@ describe('ms-messenger', () => {
         messengerSandbox.on(messenger, ['_setTimeoutToReconnect'])
       })
 
-      it('does not call client._connect if the _connectionPromise is not undefined', () => {
+      it('does not call client.connect if the _connectionPromise is not undefined', () => {
         messenger._connectionPromise = MOCK_CONNECTION_PROMISE
-        return messenger._connect()
+        return messenger.connect()
           .then(() => {
             expect(mclient.connect).not.to.have.been.called()
           })
       })
 
-      it('returns _connectionPromise if the _connectionPromise is not undefined', () => {
+      it('returns _connectionPromise', () => {
         messenger._connectionPromise = MOCK_CONNECTION_PROMISE
-        return messenger._connect()
+        return messenger.connect()
           .then(result => {
             expect(result).to.eq(MOCK_CONNECTION_PROMISE_VALUE)
           })
       })
 
-      it('calls client._connect if the _connectionPromise is not undefined', () => {
-        return messenger._connect()
+      it('calls client.connect if the _connectionPromise is not undefined', () => {
+        return messenger.connect()
           .then(() => {
             expect(mclient.connect).to.have.been.called()
             expect(messenger._logger.debug).to.have.been.called.exactly(2)
@@ -168,7 +168,7 @@ describe('ms-messenger', () => {
 
       it('logs and calls _setTimeoutToReconnect if there is an error', () => {
         mclient.connect = () => Promise.reject(new Error('ERROR'))
-        return messenger._connect()
+        return messenger.connect()
           .then(() => {
             expect(messenger._logger.debug).to.have.been.called()
             expect(messenger._setTimeoutToReconnect).to.have.been.called()
@@ -179,21 +179,21 @@ describe('ms-messenger', () => {
 
     describe('_setTimeoutToReconnect', () => {
       beforeEach(() => {
-        messenger._connect = () => Promise.resolve()
+        messenger.connect = () => Promise.resolve()
         messengerSandbox = chai.spy.sandbox()
-        messengerSandbox.on(messenger, ['_connect'])
+        messengerSandbox.on(messenger, ['connect'])
       })
 
       it('resets the connection promise', () => {
         messenger._setTimeoutToReconnect()
-        expect(messenger._connectionPromise).to.eq(undefined)
+        expect(messenger.connectionPromise).to.eq(undefined)
       })
 
       it('calls _conncect after the timeout specified in options.reconnectTimeout', () => {
         messenger.options.reconnectTimeout = 0
         return messenger._setTimeoutToReconnect()
           .then(() => {
-            expect(messenger._connect).to.have.been.called()
+            expect(messenger.connect).to.have.been.called()
           })
       })
     })
@@ -215,7 +215,7 @@ describe('ms-messenger', () => {
       })
     })
 
-    describe('_connect', () => {
+    describe('connect', () => {
       beforeEach(() => {
         messenger._setTimeoutToReconnect = () => Promise.resolve()
         messengerSandbox = chai.spy.sandbox()
@@ -224,7 +224,7 @@ describe('ms-messenger', () => {
 
       it('calls client.login', () => {
         messenger._logger.debug = chai.spy.returns(Promise.resolve())
-        return messenger._connect()
+        return messenger.connect()
           .then(() => {
             expect(mclient.login).to.have.been.called.with(username, password)
             expect(messenger._logger.debug).to.have.been.called.exactly(3)
