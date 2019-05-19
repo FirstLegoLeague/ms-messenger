@@ -12,6 +12,7 @@ class Messenger {
     this._logger = this.options.logger
     this._client = new MHubClient(this.options.mhubURI)
     this._topics = []
+    this._topicsToIgnore = []
 
     this._client.on('error', msg => this._logger.error(`Unable to connect to mhub: ${msg}`))
     this._client.on('close', msg => {
@@ -23,12 +24,20 @@ class Messenger {
   listen (topic, callback) {
     this._client.on('message', message => {
       if (message.topic === topic) {
-        callback(message.data, message)
+        if (this._topicsToIgnore.include(topic)) {
+          this._topicsToIgnore = this._topicsToIgnore.filter(t => t !== topic)
+        } else {
+          callback(message.data, message)
+        }
       }
     })
     this._topics.push(topic)
     return this.connect()
       .then(() => this._client.subscribe(this.options.node, topic))
+  }
+
+  on (topic, callback) {
+    return this.listen(topic, callback)
   }
 
   send (topic, data) {
@@ -63,6 +72,10 @@ class Messenger {
         })
     }
     return this._connectionPromise
+  }
+
+  ignoreNextMessage (topic) {
+    this._topicsToIgnore.push(topic)
   }
 
   _setTimeoutToReconnect () {
