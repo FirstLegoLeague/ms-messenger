@@ -57,12 +57,13 @@ describe('ms-messenger', () => {
     describe('listen', () => {
       const topic = 'topic'
       const anotherTopic = 'another topic'
-      const callback = chai.spy()
+      let callback
 
       beforeEach(() => {
         messenger.connect = () => Promise.resolve()
         messengerSandbox = chai.spy.sandbox()
         messengerSandbox.on(messenger, ['connect'])
+        callback = chai.spy()
       })
 
       it('attaches a listen on the client `message` event that calls the callback only if the topic fits', () => {
@@ -75,6 +76,15 @@ describe('ms-messenger', () => {
 
             mclient.emit('message', { topic: topic })
             expect(callback).to.have.been.called()
+          })
+      })
+
+      it('attaches a listen on the client `message` event that ignores a requestedly ignored topic', () => {
+        messenger.ignoreNextMessage(topic)
+        return messenger.listen(topic, callback)
+          .then(() => {
+            mclient.emit('message', { topic: topic })
+            expect(callback).not.to.have.been.called()
           })
       })
 
@@ -94,6 +104,62 @@ describe('ms-messenger', () => {
 
       it('calls client.subscribe with the default node and topic', () => {
         return messenger.listen(topic, callback)
+          .then(() => {
+            expect(mclient.subscribe).to.have.been.called.with(Messenger.DEFAULT_OPTIONS.node, topic)
+          })
+      })
+    })
+
+    describe('on', () => {
+      const topic = 'topic'
+      const anotherTopic = 'another topic'
+      let callback
+
+      beforeEach(() => {
+        messenger.connect = () => Promise.resolve()
+        messengerSandbox = chai.spy.sandbox()
+        messengerSandbox.on(messenger, ['connect'])
+        callback = chai.spy()
+      })
+
+      it('attaches a listen on the client `message` event that calls the callback only if the topic fits', () => {
+        return messenger.on(topic, callback)
+          .then(() => {
+            expect(mclient.on).to.have.been.called.with('message')
+
+            mclient.emit('message', { topic: anotherTopic })
+            expect(callback).not.to.have.been.called()
+
+            mclient.emit('message', { topic: topic })
+            expect(callback).to.have.been.called()
+          })
+      })
+
+      it('attaches a listen on the client `message` event that ignores a requestedly ignored topic', () => {
+        messenger.ignoreNextMessage(topic)
+        return messenger.on(topic, callback)
+          .then(() => {
+            mclient.emit('message', { topic: topic })
+            expect(callback).not.to.have.been.called()
+          })
+      })
+
+      it('saves the topic for later', () => {
+        return messenger.on(topic, callback)
+          .then(() => {
+            expect(messenger._topics).to.include(topic)
+          })
+      })
+
+      it('calls connect', () => {
+        return messenger.on(topic, callback)
+          .then(() => {
+            expect(messenger.connect).to.have.been.called()
+          })
+      })
+
+      it('calls client.subscribe with the default node and topic', () => {
+        return messenger.on(topic, callback)
           .then(() => {
             expect(mclient.subscribe).to.have.been.called.with(Messenger.DEFAULT_OPTIONS.node, topic)
           })
@@ -163,6 +229,14 @@ describe('ms-messenger', () => {
           .then(() => {
             expect(mclient.connect).to.have.been.called()
             expect(messenger._logger.debug).to.have.been.called.exactly(2)
+          })
+      })
+
+      it('adds all topics that are saved', () => {
+        messenger._topics = ['topic1']
+        return messenger.connect()
+          .then(() => {
+            expect(mclient.subscribe).to.have.been.called.with(messenger._topics[0])
           })
       })
 

@@ -24,7 +24,7 @@ class Messenger {
   listen (topic, callback) {
     this._client.on('message', message => {
       if (message.topic === topic) {
-        if (this._topicsToIgnore.include(topic)) {
+        if (this._topicsToIgnore.includes(topic)) {
           this._topicsToIgnore = this._topicsToIgnore.filter(t => t !== topic)
         } else {
           callback(message.data, message)
