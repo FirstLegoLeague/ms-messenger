@@ -1,6 +1,6 @@
 {
   "name": "@first-lego-league/ms-messenger",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Module Standard matching Mhub Client",
   "main": "index.js",
   "repository": "git@github.com:FirstLegoLeague/ms-messenger.git",
