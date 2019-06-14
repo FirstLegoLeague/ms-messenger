@@ -1,13 +1,17 @@
 {
   "name": "@first-lego-league/ms-messenger",
-  "version": "1.0.4",
   "description": "Module Standard matching Mhub Client",
+  "version": "1.0.4",
   "main": "index.js",
-  "repository": "git@github.com:FirstLegoLeague/ms-messenger.git",
+  "repository": "https://github.com/FirstLegoLeague/ms-messenger.git",
   "author": "Idan Stark <idanstark42@gmail.com>",
-  "license": "MIT",
+  "license": "GPL-3.0",
+  "files": [
+    "index.js",
+    "lib/**/*.js"
+  ],
   "engines": {
-    "node": ">=8.2.1"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "cross-env nyc --all --reporter=text --check-coverage --lines 90 mocha --recursive",
@@ -16,22 +20,25 @@
   },
   "dependencies": {
     "bluebird": "^3.5.4",
-    "chai-spies": "^1.0.0",
-    "cross-env": "^5.2.0",
-    "mhub": "^0.9.1",
-    "mocha": "^6.0.2",
-    "nyc": "^13.3.0",
-    "proxyquire": "^2.1.0"
+    "mhub": "^0.9.1"
   },
   "devDependencies": {
+    "@first-lego-league/eslint-config": "^1.0.0",
     "@first-lego-league/ms-correlation": "^0.0.5",
+    "cross-env": "^5.2.0",
     "chai": "^4.2.0",
+    "chai-spies": "^1.0.0",
     "eslint": "^5.9.0",
     "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-chai-expect": "^2.0.1",
+    "eslint-plugin-chai-friendly": "^0.4.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
+    "proxyquire": "^2.1.0"
   },
   "peerDependencies": {
     "@first-lego-league/ms-correlation": "^0.0.5"

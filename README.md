@@ -1,24 +1,22 @@
+## FIRST LEGO Leage messenger
+A MHub client working by the _FIRST_ LEGO League TMS [Module Standard](https://github.com/FirstLegoLeagueIL/architecture/blob/master/module-standard/v1.0-SNAPSHOT.md#log-messages).
 
-# ms-messenger
-A MHub client working by the Module Standard
-
-## Usage
+### Usage
 
 ```javascript
 const { Messenger } = require('@first-lego-league/ms-messenger')
 
 // Create a new object
-const messenger = new Messenger(options)
+const messenger = new Messenger({/* options... */})
 
 messenger.listen('some:topic', (messageData, message) => {
-	// do something
+  // do something
 })
 
-messenger.send('some:topic', { data })
-
+messenger.send('some:topic', { data: {/* data... */} })
 ```
 
-### options
+#### options
 
 | **option** | **meaning** |  **default** |
 |--|--|--|

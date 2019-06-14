@@ -11,9 +11,6 @@ install:
 
 # Post-install test scripts.
 test_script:
-  # Output useful info for debugging.
-  - node --version
-  - yarn --version
   # run tests
   - yarn lint
   - yarn test
