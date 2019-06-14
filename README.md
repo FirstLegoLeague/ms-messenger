@@ -7,14 +7,13 @@ A MHub client working by the _FIRST_ LEGO League TMS [Module Standard](https://g
 const { Messenger } = require('@first-lego-league/ms-messenger')
 
 // Create a new object
-const messenger = new Messenger(options)
+const messenger = new Messenger({/* options... */})
 
 messenger.listen('some:topic', (messageData, message) => {
-	// do something
+  // do something
 })
 
-messenger.send('some:topic', { data })
-
+messenger.send('some:topic', { data: {/* data... */} })
 ```
 
 #### options
