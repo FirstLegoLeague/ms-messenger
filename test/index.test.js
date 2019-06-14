@@ -1,7 +1,3 @@
-'use strict'
-/* global describe it beforeEach */
-/* eslint promise/no-callback-in-promise: 0 */
-
 const chai = require('chai')
 const proxyquire = require('proxyquire')
 const Promise = require('bluebird')
