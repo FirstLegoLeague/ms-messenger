@@ -1,6 +1,3 @@
-'use strict'
-/* eslint node/no-unsupported-features: 0 */
-
 const MHubClient = require('mhub').MClient
 const { getCorrelationId } = require('@first-lego-league/ms-correlation')
 const Promise = require('bluebird')
