@@ -11,7 +11,7 @@
     "lib/**/*.js"
   ],
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=8.x"
   },
   "scripts": {
     "test": "cross-env nyc --all --reporter=text --check-coverage --lines 90 mocha --recursive",
@@ -19,28 +19,28 @@
     "lint:fix": "eslint --ext .js --fix ./"
   },
   "dependencies": {
-    "bluebird": "^3.5.4",
-    "mhub": "^0.9.1"
+    "mhub": "^1.0.0"
   },
   "devDependencies": {
     "@first-lego-league/eslint-config": "^1.0.0",
-    "@first-lego-league/ms-correlation": "^0.0.5",
-    "cross-env": "^5.2.0",
+    "@first-lego-league/ms-correlation": "^1.0.1",
+    "bluebird": "^3.5.5",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
-    "eslint": "^5.9.0",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-chai-expect": "^2.0.1",
     "eslint-plugin-chai-friendly": "^0.4.1",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.0",
-    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
-    "mocha": "^6.0.2",
-    "nyc": "^13.3.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
     "proxyquire": "^2.1.0"
   },
   "peerDependencies": {
-    "@first-lego-league/ms-correlation": "^0.0.5"
+    "@first-lego-league/ms-correlation": "^1.0.0"
   }
 }

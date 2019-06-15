@@ -1,9 +1,9 @@
 const MHubClient = require('mhub').MClient
 const { getCorrelationId } = require('@first-lego-league/ms-correlation')
-const Promise = require('bluebird')
 
 class Messenger {
   constructor (options = {}) {
+    this._Promise = options.promise || global.Promise
     this.options = Object.assign({}, Messenger.DEFAULT_OPTIONS, options)
 
     this._logger = this.options.logger
@@ -48,7 +48,7 @@ class Messenger {
   connect () {
     if (!this._connectionPromise) {
       this._logger.debug('Connecting to MHub')
-      this._connectionPromise = this._client.connect()
+      this._connectionPromise = this._Promise.resolve(this._client.connect())
         .then(() => this._logger.debug('Conneted to MHub'))
 
       if (this.options.credentials) {
@@ -59,7 +59,7 @@ class Messenger {
 
       if (this._topics.length) {
         this._connectionPromise = this._connectionPromise
-          .then(() => Promise.all(this._topics.map(topic => this._client.subscribe(this.node, topic))))
+          .then(() => this._Promise.all(this._topics.map(topic => this._client.subscribe(this.node, topic))))
       }
 
       this._connectionPromise = this._connectionPromise
@@ -77,7 +77,7 @@ class Messenger {
 
   _setTimeoutToReconnect () {
     this._connectionPromise = undefined
-    return new Promise(resolve => {
+    return new this._Promise(resolve => {
       setTimeout(() => this.connect().then(resolve), this.options.reconnectTimeout)
     })
   }
