@@ -19,12 +19,12 @@
     "lint:fix": "eslint --ext .js --fix ./"
   },
   "dependencies": {
-    "bluebird": "^3.5.5",
     "mhub": "^1.0.0"
   },
   "devDependencies": {
     "@first-lego-league/eslint-config": "^1.0.0",
     "@first-lego-league/ms-correlation": "^1.0.1",
+    "bluebird": "^3.5.5",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cross-env": "^5.2.0",
