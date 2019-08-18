@@ -2,16 +2,29 @@ const chai = require('chai')
 const proxyquire = require('proxyquire')
 const Promise = require('bluebird')
 
-const { MHubMock, mclient } = require('./mocks/mhub.mock')
+const { createMclientMock } = require('./mocks/mhub.mock')
 const { MSCorrelationMock } = require('./mocks/ms-correlation.mock')
 
-const { Messenger } = proxyquire('../', { mhub: MHubMock, '@first-lego-league/ms-correlation': MSCorrelationMock })
+let mclient
+
+const { Messenger } = proxyquire('../', {
+  mhub: { MClient: function () { return mclient } },
+  '@first-lego-league/ms-correlation': MSCorrelationMock
+})
 
 const expect = chai.expect
 
 describe('ms-messenger', () => {
   const loggerSandbox = chai.spy.sandbox()
-  loggerSandbox.on(Messenger.DEFAULT_OPTIONS.logger, ['error', 'debug'])
+
+  beforeEach(() => {
+    mclient = createMclientMock()
+    loggerSandbox.on(Messenger.DEFAULT_OPTIONS.logger, ['error', 'debug'])
+  })
+
+  afterEach(() => {
+    loggerSandbox.restore()
+  })
 
   describe('with no options', () => {
     let messenger
@@ -204,7 +217,7 @@ describe('ms-messenger', () => {
         messengerSandbox.on(messenger, ['_setTimeoutToReconnect'])
       })
 
-      it('does not call client.connect if the _connectionPromise is not undefined', () => {
+      it('does not call client.connect if the _connectionPromise is defined', () => {
         messenger._connectionPromise = MOCK_CONNECTION_PROMISE
         return messenger.connect()
           .then(() => {
@@ -220,11 +233,11 @@ describe('ms-messenger', () => {
           })
       })
 
-      it('calls client.connect if the _connectionPromise is not undefined', () => {
+      it('calls client.connect if the _connectionPromise is undefined', () => {
         return messenger.connect()
           .then(() => {
             expect(mclient.connect).to.have.been.called()
-            expect(messenger._logger.debug).to.have.been.called.exactly(2)
+            expect(messenger._logger.debug).to.have.been.called.twice
           })
       })
 
@@ -301,5 +314,13 @@ describe('ms-messenger', () => {
           })
       })
     })
+  })
+
+  it('uses the right Promise library', () => {
+    const messenger = new Messenger({ promise: global.Promise })
+    // const messenger = new Messenger()
+    const sendPromise = messenger.send('topic', 'Some data')
+
+    expect(sendPromise).to.be.instanceOf(global.Promise)
   })
 })
