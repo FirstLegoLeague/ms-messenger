@@ -1,13 +1,15 @@
-const MHubClient = require('mhub').MClient
-const { getCorrelationId } = require('@first-lego-league/ms-correlation')
-const Promise = require('bluebird')
+const { generateCorrelationId } = require('@first-lego-league/ms-correlation/lib/correlation-id')
 
 class Messenger {
   constructor (options = {}) {
+    this._Promise = options.promise || global.Promise
     this.options = Object.assign({}, Messenger.DEFAULT_OPTIONS, options)
 
     this._logger = this.options.logger
-    this._client = new MHubClient(this.options.mhubURI)
+    const inBrowser = (typeof window === 'undefined')
+    // eslint-disable-next-line import/no-dynamic-require
+    const ClientClass = require(inBrowser ? 'mhub/dist/src/browserclient' : 'mhub/dist/src/nodeclient')
+    this._client = new ClientClass(this.options.mhubURI)
     this._topics = []
     this._topicsToIgnore = []
 
@@ -41,14 +43,14 @@ class Messenger {
     return this.connect()
       .then(() => this._client.publish(this.node, topic, data, {
         'client-id': this._clientId,
-        'correlation-id': getCorrelationId()
+        'correlation-id': generateCorrelationId()
       }))
   }
 
   connect () {
     if (!this._connectionPromise) {
       this._logger.debug('Connecting to MHub')
-      this._connectionPromise = this._client.connect()
+      this._connectionPromise = this._Promise.resolve(this._client.connect())
         .then(() => this._logger.debug('Conneted to MHub'))
 
       if (this.options.credentials) {
@@ -59,7 +61,7 @@ class Messenger {
 
       if (this._topics.length) {
         this._connectionPromise = this._connectionPromise
-          .then(() => Promise.all(this._topics.map(topic => this._client.subscribe(this.node, topic))))
+          .then(() => this._Promise.all(this._topics.map(topic => this._client.subscribe(this.node, topic))))
       }
 
       this._connectionPromise = this._connectionPromise
@@ -77,7 +79,7 @@ class Messenger {
 
   _setTimeoutToReconnect () {
     this._connectionPromise = undefined
-    return new Promise(resolve => {
+    return new this._Promise(resolve => {
       setTimeout(() => this.connect().then(resolve), this.options.reconnectTimeout)
     })
   }
@@ -88,7 +90,7 @@ const DO_NOTHING = () => { }
 Messenger.DEFAULT_OPTIONS = {
   mhubURI: process.env.MHUB_URI,
   node: 'default',
-  clientId: getCorrelationId(),
+  clientId: generateCorrelationId(),
   reconnectTimeout: 10 * 1000, // 10 seconds
   logger: {
     debug: DO_NOTHING,
