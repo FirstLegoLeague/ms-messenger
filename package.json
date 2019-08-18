@@ -1,7 +1,7 @@
 {
   "name": "@first-lego-league/ms-messenger",
   "description": "Module Standard matching Mhub Client",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "index.js",
   "repository": "https://github.com/FirstLegoLeague/ms-messenger.git",
   "author": "Idan Stark <idanstark42@gmail.com>",
@@ -25,9 +25,9 @@
   "devDependencies": {
     "@first-lego-league/eslint-config": "^1.0.0",
     "@first-lego-league/ms-correlation": "^0.0.5",
-    "cross-env": "^5.2.0",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
+    "cross-env": "^5.2.0",
     "eslint": "^5.9.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-chai-expect": "^2.0.1",
