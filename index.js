@@ -6,9 +6,9 @@ class Messenger {
     this.options = Object.assign({}, Messenger.DEFAULT_OPTIONS, options)
 
     this._logger = this.options.logger
-    const inBrowser = (typeof window === 'undefined')
+    const inServer = (typeof window === 'undefined')
     // eslint-disable-next-line import/no-dynamic-require
-    const ClientClass = require(inBrowser ? 'mhub/dist/src/browserclient' : 'mhub/dist/src/nodeclient')
+    const ClientClass = require(inServer ? 'mhub/dist/src/nodeclient' : 'mhub/dist/src/browserclient').MClient
     this._client = new ClientClass(this.options.mhubURI)
     this._topics = []
     this._topicsToIgnore = []
