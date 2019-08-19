@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.4",
-    "mhub": "^1.0.0"
+    "mhub": "^2.0.0"
   },
   "devDependencies": {
     "@first-lego-league/eslint-config": "^1.0.0",

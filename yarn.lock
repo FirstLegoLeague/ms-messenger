@@ -1837,10 +1837,10 @@ merge-source-map@^1.1.0:
   dependencies:
     source-map "^0.6.1"
 
-mhub@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/mhub/-/mhub-1.0.1.tgz#82ca27a4c9f52f0b6de69bbcef9d3eafa4f53cd2"
-  integrity sha512-Sfcdr2dE5EmvkvAiQHnM3dP91c0o4kqzmYNLNqcztJ9MS2CpMB5gHNEGlmdCVe1Z6h+j2r9G9uuC7GGouVcOPw==
+mhub@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/mhub/-/mhub-2.0.0.tgz#48f3d128ec9d4e51377f1cbc06eb7f67cf98eae9"
+  integrity sha512-jIY/QZ7XzA3+WQxF8KrHyhwR7l2A+8szg0yccIvn2t74nug3vEYHeN3CEnSCndt4db/ma1kBzUx78rsm/miWrA==
   dependencies:
     "@types/mkdirp" "^0.3.29"
     "@types/node" "^8.0.17"
@@ -1849,7 +1849,6 @@ mhub@^1.0.0:
     micromatch "^3.1.10"
     mkdirp "^0.5.1"
     source-map-support "^0.4.1"
-    ts-promise "^0.3.4"
     ws "^3.3.1"
     yargs "^4.7.1"
 
@@ -2944,11 +2943,6 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
   integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
-
-ts-promise@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/ts-promise/-/ts-promise-0.3.4.tgz#165ff9ad521476d93c005601eefe5bb92d579cbe"
-  integrity sha1-Fl/5rVIUdtk8AFYB7v5buS1XnL4=
 
 tslib@^1.9.0:
   version "1.9.3"
