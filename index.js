@@ -1,4 +1,6 @@
-const { generateCorrelationId } = require('@first-lego-league/ms-correlation/lib/correlation-id')
+const { getCorrelationId } = require('@first-lego-league/ms-correlation')
+
+const MClient = require('./mclient')
 
 class Messenger {
   constructor (options = {}) {
@@ -6,10 +8,7 @@ class Messenger {
     this.options = Object.assign({}, Messenger.DEFAULT_OPTIONS, options)
 
     this._logger = this.options.logger
-    const inServer = (typeof window === 'undefined')
-    // eslint-disable-next-line import/no-dynamic-require
-    const ClientClass = require(inServer ? 'mhub/dist/src/nodeclient' : 'mhub/dist/src/browserclient').MClient
-    this._client = new ClientClass(this.options.mhubURI)
+    this._client = new MClient(this.options.mhubURI)
     this._topics = []
     this._topicsToIgnore = []
 
@@ -41,9 +40,9 @@ class Messenger {
 
   send (topic, data) {
     return this.connect()
-      .then(() => this._client.publish(this.node, topic, data, {
+      .then(() => this._client.publish(this.options.node, topic, data, {
         'client-id': this._clientId,
-        'correlation-id': generateCorrelationId()
+        'correlation-id': getCorrelationId()
       }))
   }
 
@@ -61,7 +60,7 @@ class Messenger {
 
       if (this._topics.length) {
         this._connectionPromise = this._connectionPromise
-          .then(() => this._Promise.all(this._topics.map(topic => this._client.subscribe(this.node, topic))))
+          .then(() => this._Promise.all(this._topics.map(topic => this._client.subscribe(this.options.node, topic))))
       }
 
       this._connectionPromise = this._connectionPromise
@@ -90,7 +89,7 @@ const DO_NOTHING = () => { }
 Messenger.DEFAULT_OPTIONS = {
   mhubURI: process.env.MHUB_URI,
   node: 'default',
-  clientId: generateCorrelationId(),
+  clientId: 'unknown',
   reconnectTimeout: 10 * 1000, // 10 seconds
   logger: {
     debug: DO_NOTHING,
