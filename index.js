@@ -1,4 +1,4 @@
-const MClient = require('./mclient')
+const MClient = require('./lib/mclient')
 
 class Messenger {
   constructor (options = {}) {
