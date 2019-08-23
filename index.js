@@ -1,5 +1,3 @@
-const { getCorrelationId } = require('@first-lego-league/ms-correlation')
-
 const MClient = require('./mclient')
 
 class Messenger {
@@ -41,8 +39,7 @@ class Messenger {
   send (topic, data) {
     return this.connect()
       .then(() => this._client.publish(this.options.node, topic, data, {
-        'client-id': this._clientId,
-        'correlation-id': getCorrelationId()
+        'client-id': this._clientId
       }))
   }
 

@@ -192,7 +192,7 @@ describe('ms-messenger', () => {
           })
       })
 
-      it('calls getCorrelationId', () => {
+      it.skip('calls getCorrelationId', () => {
         return messenger.send(topic, data)
           .then(() => {
             expect(MSCorrelationMock.getCorrelationId).to.have.been.called()

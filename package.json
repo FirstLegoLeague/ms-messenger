@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@first-lego-league/eslint-config": "^1.0.0",
-    "@first-lego-league/ms-correlation": "^1.0.0",
     "bluebird": "^3.5.4",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
@@ -40,7 +39,5 @@
     "nyc": "^13.3.0",
     "proxyquire": "^2.1.0"
   },
-  "peerDependencies": {
-    "@first-lego-league/ms-correlation": "^0.0.5"
-  }
+  "peerDependencies": {}
 }
