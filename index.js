@@ -1,9 +1,11 @@
+const isServer = require('detect-node')
+
 const MClient = require('./lib/mclient')
 
 class Messenger {
   constructor (options = {}) {
-    this._Promise = options.promise || global.Promise
     this.options = Object.assign({}, Messenger.DEFAULT_OPTIONS, options)
+    this._Promise = options.promise
 
     this._logger = this.options.logger
     this._client = new MClient(this.options.mhubURI)
@@ -94,7 +96,13 @@ Messenger.DEFAULT_OPTIONS = {
     warn: DO_NOTHING,
     error: DO_NOTHING,
     fatal: DO_NOTHING
-  }
+  },
+  promise: global.Promise
+}
+
+if (isServer) {
+  const { Logger } = require('@first-lego-league/ms-logger')
+  Messenger.DEFAULT_OPTIONS.logger = new Logger()
 }
 
 exports.Messenger = Messenger

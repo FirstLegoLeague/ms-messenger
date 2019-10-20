@@ -19,6 +19,8 @@
     "lint:fix": "eslint --ext .js --fix ./"
   },
   "dependencies": {
+    "@first-lego-league/ms-logger": "^2.0.1",
+    "detect-node": "^2.0.4",
     "mhub": "^2.0.0"
   },
   "devDependencies": {
