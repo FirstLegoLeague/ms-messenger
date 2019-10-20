@@ -8,7 +8,7 @@ const { MSCorrelationMock } = require('./mocks/ms-correlation.mock')
 let mclient
 
 const { Messenger } = proxyquire('../', {
-  './lib/mclient': function () { return mclient },
+  './lib/mhub_client': function () { return mclient },
   '@first-lego-league/ms-correlation': MSCorrelationMock
 })
 

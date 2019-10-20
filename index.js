@@ -1,16 +1,19 @@
-const isServer = require('detect-node')
-
-const MClient = require('./lib/mclient')
+const { MhubClient } = require('./lib/mhub_client')
+const { getDefaultLogger } = require('./lib/default_logger')
+const { headers } = require('./lib/headers')
+const { getClientId } = require('./lib/identity')
+const { ignoreNextMessageOfTopic, shouldIgnoreMessage } = require('./lib/ignoring')
 
 class Messenger {
   constructor (options = {}) {
     this.options = Object.assign({}, Messenger.DEFAULT_OPTIONS, options)
-    this._Promise = options.promise
 
+    this.clienId = getClientId(this.options)
+    this._client = new MhubClient(this.options.mhubURI)
     this._logger = this.options.logger
-    this._client = new MClient(this.options.mhubURI)
+    this._Promise = this.options.promise
+
     this._topics = []
-    this._topicsToIgnore = []
 
     this._client.on('error', msg => this._logger.error(`Unable to connect to mhub: ${msg}`))
     this._client.on('close', msg => {
@@ -21,15 +24,12 @@ class Messenger {
 
   listen (topic, callback) {
     this._client.on('message', message => {
-      if (message.topic === topic) {
-        if (this._topicsToIgnore.includes(topic)) {
-          this._topicsToIgnore = this._topicsToIgnore.filter(t => t !== topic)
-        } else {
-          callback(message.data, message)
-        }
+      if (message.topic === topic && !shouldIgnoreMessage(message)) {
+        callback(message.data, message)
       }
     })
     this._topics.push(topic)
+
     return this.connect()
       .then(() => this._client.subscribe(this.options.node, topic))
   }
@@ -40,9 +40,7 @@ class Messenger {
 
   send (topic, data) {
     return this.connect()
-      .then(() => this._client.publish(this.options.node, topic, data, {
-        'client-id': this._clientId
-      }))
+      .then(() => this._client.publish(this.options.node, topic, data, headers(this)))
   }
 
   connect () {
@@ -72,7 +70,7 @@ class Messenger {
   }
 
   ignoreNextMessage (topic) {
-    this._topicsToIgnore.push(topic)
+    ignoreNextMessageOfTopic(topic)
   }
 
   _setTimeoutToReconnect () {
@@ -83,26 +81,13 @@ class Messenger {
   }
 }
 
-const DO_NOTHING = () => { }
-
 Messenger.DEFAULT_OPTIONS = {
   mhubURI: process.env.MHUB_URI,
   node: 'default',
   clientId: 'unknown',
   reconnectTimeout: 10 * 1000, // 10 seconds
-  logger: {
-    debug: DO_NOTHING,
-    info: DO_NOTHING,
-    warn: DO_NOTHING,
-    error: DO_NOTHING,
-    fatal: DO_NOTHING
-  },
+  logger: getDefaultLogger(),
   promise: global.Promise
-}
-
-if (isServer) {
-  const { Logger } = require('@first-lego-league/ms-logger')
-  Messenger.DEFAULT_OPTIONS.logger = new Logger()
 }
 
 exports.Messenger = Messenger
