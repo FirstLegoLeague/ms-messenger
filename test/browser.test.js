@@ -7,10 +7,9 @@ chai.use(spies)
 let mclient
 let mclientSpy
 let messengerFactorySpy
-let correlateMessegerSpy
 
-const { createMessenger } = proxyquire('../', {
-  'mhub/dist/src/nodeclient': {
+const { createMessenger } = proxyquire('../browser', {
+  'mhub/dist/src/browserclient': {
     MClient: function () {
       return mclientSpy.apply(this, arguments)
     }
@@ -18,11 +17,6 @@ const { createMessenger } = proxyquire('../', {
   './lib/messenger_factory': {
     createMessenger: function () {
       return messengerFactorySpy.apply(this, arguments)
-    }
-  },
-  './lib/correlation': {
-    correlateMesseger: function () {
-      return correlateMessegerSpy.apply(this, arguments)
     }
   }
 })
@@ -33,7 +27,6 @@ describe('ms-messenger in client', () => {
   beforeEach(() => {
     mclient = { id: 'client' }
     messengerFactorySpy = chai.spy(() => mclient)
-    correlateMessegerSpy = chai.spy(() => { })
     mclientSpy = chai.spy(() => mclient)
   })
 
@@ -62,13 +55,5 @@ describe('ms-messenger in client', () => {
 
     createMessenger(options)
     expect(messengerFactorySpy).to.have.been.called()
-  })
-
-  it('calls correlateMesseger with the client', () => {
-    const mhubURI = 'ws://some.uri'
-    const options = { mhubURI }
-
-    createMessenger(options)
-    expect(correlateMessegerSpy).to.have.been.called.with(mclient)
   })
 })

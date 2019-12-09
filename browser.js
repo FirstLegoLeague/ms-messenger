@@ -2,8 +2,13 @@ const { MClient } = require('mhub/dist/src/browserclient')
 
 const { createMessenger } = require('./lib/messenger_factory')
 
-exports.createMessenger = options => {
-  const messenger = createMessenger(new MClient(options.mhubURI), options)
+const DEFAULT_OPTIONS = {
+  mhubURI: process.env.MHUB_URI,
+  node: 'default',
+  reconnectTimeout: 10 * 1000 // 10 seconds
+}
 
-  return messenger
+exports.createMessenger = options => {
+  options = Object.assign({ }, DEFAULT_OPTIONS, options)
+  return createMessenger(new MClient(options.mhubURI), options)
 }

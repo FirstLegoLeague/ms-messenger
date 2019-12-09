@@ -1,26 +1,43 @@
 const chai = require('chai')
+const spies = require('chai-spies')
 
-const TOPIC_TO_IGNORE = 'topic1'
-const TOPIC_NOT_TO_IGNORE = 'topic2'
+chai.use(spies)
 
-const { ignoreNextMessageOfTopic, shouldIgnoreMessage } = require('../../lib/ignoring')
+const TOPIC = 'TOPIC'
+const ANOTHER_TOPIC = 'ANOTHER TOPIC'
+const MESSAGE_OF_TOPIC = { TOPIC }
+const MESSAGE_OF_ANOTHER_TOPIC = { TOPIC: ANOTHER_TOPIC }
+
+const { ignoreByTopic } = require('../../lib/ignoring')
 
 const expect = chai.expect
 
 describe('ignoring', () => {
-  it('tells to ignore if the topic was requested for ignore', () => {
-    ignoreNextMessageOfTopic(TOPIC_TO_IGNORE)
-    expect(shouldIgnoreMessage({ topic: TOPIC_TO_IGNORE })).to.equal(true)
+  let messenger
+
+  beforeEach(() => {
+    messenger = { _handlingFilters: [] }
   })
 
-  it('tells not to ignore if the topic was not the one requested for ignore', () => {
-    ignoreNextMessageOfTopic(TOPIC_TO_IGNORE)
-    expect(shouldIgnoreMessage({ topic: TOPIC_NOT_TO_IGNORE })).to.equal(false)
+  it('adds one action to the handlingFilters', () => {
+    ignoreByTopic(messenger)
+    expect(messenger._handlingFilters.length).to.equal(1)
   })
 
-  it('tells not to ignore on the second time called if the topic was requested for ignore', () => {
-    ignoreNextMessageOfTopic(TOPIC_TO_IGNORE)
-    shouldIgnoreMessage({ topic: TOPIC_TO_IGNORE })
-    expect(shouldIgnoreMessage({ topic: TOPIC_TO_IGNORE })).to.equal(true)
+  it('adds a filter to the headersProviders which returns true before calling ignoreNextMessageOfTopic', () => {
+    ignoreByTopic(messenger)
+    expect(messenger._handlingFilters[0](MESSAGE_OF_TOPIC, TOPIC)).to.equal(true)
+  })
+
+  it('adds a filter to the headersProviders which returns false for a message from the givven topic after calling ignoreNextMessageOfTopic', () => {
+    ignoreByTopic(messenger)
+    messenger.ignoreNextMessageOfTopic(TOPIC)
+    expect(messenger._handlingFilters[0](MESSAGE_OF_TOPIC, TOPIC)).to.equal(false)
+  })
+
+  it('adds a filter to the headersProviders which returns true for a message from another topic after calling ignoreNextMessageOfTopic', () => {
+    ignoreByTopic(messenger)
+    messenger.ignoreNextMessageOfTopic(TOPIC)
+    expect(messenger._handlingFilters[0](MESSAGE_OF_ANOTHER_TOPIC, ANOTHER_TOPIC)).to.equal(true)
   })
 })

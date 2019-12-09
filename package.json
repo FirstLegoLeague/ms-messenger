@@ -14,7 +14,9 @@
     "node": ">=8.x"
   },
   "scripts": {
-    "test": "cross-env nyc --all --reporter=text --check-coverage --lines 90 mocha --recursive",
+    "test": "cross-env env MHUB_URI=ws://mhub.uri mocha --recursive",
+    "test:coverage": "nyc --reporter=text yarn test",
+    "test:ci": "nyc --reporter=lcov yarn test && codecov",
     "lint": "eslint --ext .js ./",
     "lint:fix": "eslint --ext .js --fix ./"
   },
@@ -38,7 +40,8 @@
     "eslint-plugin-standard": "^4.0.0",
     "mocha": "^6.0.2",
     "nyc": "^13.3.0",
-    "proxyquire": "^2.1.0"
+    "proxyquire": "^2.1.0",
+    "sinon": "^7.5.0"
   },
   "peerDependencies": {},
   "optionalDependencies": {
