@@ -1,18 +1,26 @@
 const chai = require('chai')
+const proxyquire = require('proxyquire')
 const spies = require('chai-spies')
 
 chai.use(spies)
 
+let logger
 let clientEventListenSpy
 let loggerDebugSpy
 let loggerErrorSpy
 
-const { logMessengerEvents } = require('../../lib/logging')
+const { logMessengerEvents } = proxyquire('../../lib/logging', {
+  '@first-lego-league/ms-logger': {
+    Logger: function () {
+      return logger
+    }
+  }
+})
 
 const expect = chai.expect
 
-describe('ignoring', () => {
-  let messenger, logger
+describe('loggin', () => {
+  let messenger
 
   beforeEach(() => {
     messenger = {
@@ -42,34 +50,34 @@ describe('ignoring', () => {
   })
 
   it('adds the givven logger as a logger field to the client', () => {
-    logMessengerEvents(messenger, logger)
+    logMessengerEvents(messenger)
     expect(messenger.logger).to.equal(logger)
   })
 
   it('adds one action to connectionPreactions', () => {
-    logMessengerEvents(messenger, logger)
+    logMessengerEvents(messenger)
     expect(messenger._connectionPostactions.length).to.equal(1)
   })
 
   it('adds an action to connectionPreactions which logs pre connection message in debug level', () => {
-    logMessengerEvents(messenger, logger)
+    logMessengerEvents(messenger)
     messenger._connectionPreactions[0]()
     expect(loggerDebugSpy).to.have.been.called.with('Connecting to MHub')
   })
 
   it('adds one action to connectionPostactions', () => {
-    logMessengerEvents(messenger, logger)
+    logMessengerEvents(messenger)
     expect(messenger._connectionPostactions.length).to.equal(1)
   })
 
   it('adds an action to connectionPostactions which logs post connection message in debug level', () => {
-    logMessengerEvents(messenger, logger)
+    logMessengerEvents(messenger)
     messenger._connectionPostactions[0]()
     expect(loggerDebugSpy).to.have.been.called.with('Connected to MHub')
   })
 
   it('adds an action to the client `error` event', () => {
-    logMessengerEvents(messenger, logger)
+    logMessengerEvents(messenger)
     expect(messenger.client._handlers.error).to.not.be.undefined
   })
 

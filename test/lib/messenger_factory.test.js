@@ -8,7 +8,6 @@ const CLIENT = { }
 
 let mclient
 let messengerSpy
-let loggingSpy
 let identitySpy
 let ignoringSpy
 let stayAliveSpy
@@ -18,11 +17,6 @@ const { createMessenger } = proxyquire('../../lib/messenger_factory', {
   './messenger': {
     Messenger: function () {
       return messengerSpy.apply(this, arguments)
-    }
-  },
-  './logging': {
-    logMessengerEvents: function () {
-      return loggingSpy.apply(this, arguments)
     }
   },
   './client_identity': {
@@ -53,7 +47,6 @@ describe('ms-messenger in client', () => {
   beforeEach(() => {
     mclient = { id: 'client' }
     messengerSpy = chai.spy(() => mclient)
-    loggingSpy = chai.spy(() => { })
     identitySpy = chai.spy(() => { })
     ignoringSpy = chai.spy(() => { })
     stayAliveSpy = chai.spy(() => { })
@@ -68,20 +61,6 @@ describe('ms-messenger in client', () => {
     const options = { }
     createMessenger(CLIENT, options)
     expect(messengerSpy).to.have.been.called.with(CLIENT, options)
-  })
-
-  it('enables logging if options has a logger', () => {
-    const options = { logger: { } }
-
-    const messenger = createMessenger(CLIENT, options)
-    expect(loggingSpy).to.have.been.called.with(messenger, options.logger)
-  })
-
-  it('does not enable logging if options does not have a logger', () => {
-    const options = { }
-
-    createMessenger(CLIENT, options)
-    expect(loggingSpy).to.not.have.been.called()
   })
 
   it('enables client identity', () => {
