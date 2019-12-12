@@ -14,7 +14,7 @@
     "node": ">=8.x"
   },
   "scripts": {
-    "test": "cross-env env MHUB_URI=ws://mhub.uri mocha --recursive",
+    "test": "cross-env MHUB_URI=ws://mhub.uri mocha --recursive",
     "test:coverage": "nyc --reporter=text yarn test",
     "test:ci": "nyc --reporter=lcov yarn test && codecov",
     "lint": "eslint --ext .js ./",
