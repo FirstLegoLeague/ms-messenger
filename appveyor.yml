@@ -13,7 +13,7 @@ install:
 test_script:
   # run tests
   - yarn lint
-  - yarn test
+  - yarn test:ci
 
 # Don't actually build.
 build: off
