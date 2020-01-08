@@ -8,10 +8,10 @@
 [![David Peer Dependencies Status](https://david-dm.org/FirstLegoLeague/ms-messenger/peer-status.svg)](https://david-dm.org/FirstLegoLeague/ms-messenger?type=peer)
 
 # FIRST LEGO Leage messenger
-A [MHub](https://www.npmjs.com/package/mhub) client working by the _FIRST_ LEGO League TMS [Module Standard](https://github.com/FirstLegoLeague/architecture/blob/master/module-standard/v1.0-SNAPSHOT.md#log-messages).
+A [MHub](https://www.npmjs.com/package/mhub) client, working according to the _FIRST_ LEGO League TMS [Module Standard mhub messages section](https://github.com/FirstLegoLeague/architecture/blob/master/module-standard/v1.0-SNAPSHOT.md#mhub-messages).
 
-## The logic of this module
-This module was meant to serve as an extendable messenger which already works by the Module Standard and allows you to easily listen to and send messages. It gives you all the functionality needed for a Mhub messenger running in node or in browser.
+## Logic
+This package was meant to serve as an extendable messenger which already works by the Module Standard and allows you to easily listen to and send messages. It gives you all the functionality needed for a Mhub messenger running in node or in browser.
 
 ### In node
 The messenger givven in node is fully [correlated](https://github.com/FirstLegoLeague/architecture/blob/master/module-standard/v1.0-SNAPSHOT.md#cross-module-correlations) and logged using [ms-logger](https://www.npmjs.com/package/@first-lego-league/ms-logger). It also has a client-id which recognizes it against other clients, and is sent in the headers for recognition.
