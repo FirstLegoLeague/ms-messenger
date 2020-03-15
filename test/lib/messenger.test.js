@@ -58,7 +58,7 @@ describe('messenger class', () => {
 
   it('has an array of header providers', () => {
     const messenger = new Messenger(mclient, options)
-    expect(messenger._headerProviders).to.be.instanceof(Array)
+    expect(messenger._headersProviders).to.be.instanceof(Array)
   })
 
   it('has a default handling filter for TOPIC matching', () => {
@@ -250,8 +250,8 @@ describe('messenger class', () => {
     const header2 = 'header2'
     const messenger = new Messenger(mclient, options)
     messenger.connect = chai.spy(() => Promise.resolve())
-    messenger._headerProviders.push(() => ({ header1 }))
-    messenger._headerProviders.push(() => ({ header2 }))
+    messenger._headersProviders.push(() => ({ header1 }))
+    messenger._headersProviders.push(() => ({ header2 }))
     return messenger.send(TOPIC, DATA).then(() => {
       expect(messenger.client.publish).to.have.been.called.with(messenger.options.node, TOPIC, DATA, { header1, header2 })
     })
