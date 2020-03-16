@@ -9,6 +9,7 @@
   "license": "GPL-3.0",
   "files": [
     "index.js",
+    "browser.js",
     "lib/**/*.js"
   ],
   "engines": {
