@@ -3,6 +3,7 @@
   "description": "Module Standard matching Mhub Client",
   "version": "1.2.5",
   "main": "index.js",
+  "browser": "browser.js",
   "repository": "https://github.com/FirstLegoLeague/ms-messenger.git",
   "author": "Idan Stark <idanstark42@gmail.com>",
   "license": "GPL-3.0",
