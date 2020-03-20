@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@first-lego-league/eslint-config": "^1.0.0",
-    "bluebird": "^3.5.4",
+    "bluebird": "^3.7.2",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "codecov": "^3.6.1",

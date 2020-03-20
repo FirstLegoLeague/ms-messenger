@@ -1,3 +1,4 @@
+const Promise = require('bluebird')
 const { MClient } = require('mhub/dist/src/nodeclient')
 
 const { createMessenger } = require('./lib/messenger_factory')
@@ -7,6 +8,7 @@ const { logMessengerEvents } = require('./lib/logging')
 const DEFAULT_OPTIONS = {
   mhubURI: process.env.MHUB_URI,
   node: 'default',
+  promise: Promise,
   reconnectTimeout: 10 * 1000 // 10 seconds
 }
 
