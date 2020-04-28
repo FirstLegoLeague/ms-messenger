@@ -8,6 +8,8 @@ let mclient
 let mclientSpy
 let messengerFactorySpy
 
+window.mhubURI = process.env.MHUB_URI
+
 const { createMessenger } = proxyquire('../browser', {
   'mhub/dist/src/browserclient': {
     MClient: function () {
@@ -42,11 +44,11 @@ describe('ms-messenger in client', () => {
     expect(mclientSpy).to.have.been.called.with(mhubURI)
   })
 
-  it('calls MClient with the process MHUB_URI if options has no mhub URI field', () => {
+  it('calls MClient with the global mhubURI if options has no mhub URI field', () => {
     const options = { }
 
     createMessenger(options)
-    expect(mclientSpy).to.have.been.called.with(process.env.MHUB_URI)
+    expect(mclientSpy).to.have.been.called.with(window.mhubURI)
   })
 
   it('calls messenger factory', () => {

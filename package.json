@@ -16,7 +16,7 @@
     "node": ">=8.x"
   },
   "scripts": {
-    "test": "cross-env MHUB_URI=ws://mhub.uri mocha --recursive",
+    "test": "cross-env MHUB_URI=ws://mhub.uri mocha --recursive -r jsdom-global/register",
     "test:coverage": "nyc --reporter=text yarn test",
     "test:ci": "nyc --reporter=lcov yarn test && codecov",
     "lint": "eslint --ext .js ./",
@@ -41,6 +41,8 @@
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "jsdom": "^16.2.2",
+    "jsdom-global": "^3.0.2",
     "mocha": "^6.0.2",
     "nyc": "^13.3.0",
     "proxyquire": "^2.1.0",
